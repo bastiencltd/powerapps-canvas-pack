@@ -1,0 +1,91 @@
+# ============================================================================
+# TEMPLATE gallery-list — data list : Gallery Variant Vertical + Items +
+# AutoLayout shell inside the template + 2 row labels.
+# MACHINE-PROVEN : Screen1.pa.yaml of a complete app (3 files) compiled
+# by compile_canvas -> "Validation PASSED, Files validated: 3".
+# Proof scratch folder : _scratch\agent-6c\gallery-list\
+# WHERE TO INSERT : full screen in CREATE (overwrite Screen1.pa.yaml) or a new screen
+# key to declare in _EditorState.ScreensOrder.
+# Sources 05-patterns-templates.json : structure = gallery_ligne_responsive_via_shell_autolayout
+# (Gallery Vertical + GroupContainer AutoLayout shell Width: =Parent.TemplateWidth /
+# Height: =Parent.TemplateHeight) ; viewport props = gallery_viewport_borne +
+# gallery_navigation_sidebar_patternes_A_B Pattern A (FillPortions: =1, NEVER Height at the
+# same time) ; labels = table_de_donnees_header_plus_gallery row (Text:
+# =ThisItem.Category literal, identical header/gallery FillPortions, Size 8/9,
+# Font.'Lato Light'/Font.Lato) ; Items inline Table() = literal form of the patterns
+# gallery_comme_menu / gallery_cartes_kpi. Replace the inline Table() with
+# Items: =colDraftRows (shell pattern literal) or a data source.
+# PITFALLS RESPECTED : explicit positive TemplateSize, no autosizing
+# CountRows/Self.TemplateHeight ; never Self.TemplateSize in a formula ;
+# no X/Y in the AutoLayout shell (FillPortions only).
+# ============================================================================
+Screens:
+  Screen1:
+    Properties:
+      Fill: =RGBA(246, 246, 250, 1)
+    Children:
+      - conListRoot:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            Width: =Parent.Width
+            Height: =Parent.Height
+            LayoutMinWidth: =0
+            LayoutMinHeight: =0
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            DropShadow: =DropShadow.None
+          Children:
+            - galList:
+                Control: Gallery
+                Variant: Vertical
+                Properties:
+                  Items: |-
+                    =Table(
+                        {Title: "Premiere ligne", Category: "Alpha"},
+                        {Title: "Deuxieme ligne", Category: "Bravo"},
+                        {Title: "Troisieme ligne", Category: "Charlie"}
+                    )
+                  FillPortions: =1
+                  TemplateSize: =68
+                  TemplatePadding: =0
+                  ShowScrollbar: =true
+                  DelayItemLoading: =false
+                  LayoutMinHeight: =0
+                  LayoutMinWidth: =0
+                Children:
+                  - galRowShell:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        Width: =Parent.TemplateWidth
+                        Height: =Parent.TemplateHeight
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutGap: =8
+                        PaddingLeft: =10
+                        PaddingRight: =10
+                        LayoutMinWidth: =0
+                        LayoutMinHeight: =0
+                        DropShadow: =DropShadow.None
+                      Children:
+                        - galLblCategory:
+                            Control: Label@2.5.1
+                            Properties:
+                              Text: =ThisItem.Category
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FillPortions: =1
+                              LayoutMinHeight: =0
+                              Color: =RGBA(131,141,157,1)
+                              Font: =Font.'Lato Light'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =8
+                        - galLblTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              Text: =ThisItem.Title
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FillPortions: =2
+                              LayoutMinHeight: =0
+                              Size: =9
+                              Font: =Font.Lato

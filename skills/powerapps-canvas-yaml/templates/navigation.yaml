@@ -1,0 +1,177 @@
+# ============================================================================
+# TEMPLATE navigation — 2 screens + lateral navigation menu : Screen1 with
+# sidebar Gallery Vertical (Items = inline Table() with a PageNavigation field,
+# OnSelect = Navigate literal), fixed header (corps_scrollable_header_fixe pattern :
+# GroupContainer AutoLayout Height: =75 / FillPortions: =0) and sidebar toggle
+# driven by ONE single boolean varMenuExpanded (sidebar_repliable_variable_unique pattern).
+# MACHINE-PROVEN : complete app of TWO screens — App.pa.yaml + Screen1.pa.yaml
+# (below) + DetailsScreen.pa.yaml + _EditorState.pa.yaml (ScreensOrder: Screen1,
+# DetailsScreen) = 4 files compiled by compile_canvas -> "Validation PASSED,
+# Files validated: 4".
+# Proof scratch folder : _scratch\agent-6c\navigation\
+# WHERE TO INSERT : below = the start screen (overwrite Screen1.pa.yaml in CREATE).
+# You MUST ALSO copy DetailsScreen.pa.yaml from the proof folder (2nd Screens:
+# file with its own key name = file name) and declare BOTH screens in
+# _EditorState.pa.yaml. The 2nd proof screen shows the other side of the pattern (same
+# header + ModernButton "Back" with OnSelect: =false, bouton_custom_overlay_transparent pattern literal).
+# Literal formulas 05-patterns-templates.json : OnVisible Set(varMenuExpanded,
+# false); Set(CurrentMenuID, 1) (sidebar_repliable_variable_unique) ; OnSelect:
+# =Set(varMenuExpanded, !varMenuExpanded) (same) ; OnSelect: =Navigate(ThisItem.PageNavigation);
+# Set(CurrentMenuID, ThisItem.MenuID) (gallery_comme_menu_navigation_table) ; Color:
+# =If(CurrentMenuID = ThisItem.MenuID, RGBA(42,43,71,1), RGBA(192,194,197,1)) (same) ;
+# Visible: =varMenuExpanded (sidebar_repliable). The 05 names the target screens
+# HomeScreen/TasksScreen ; here Home = Screen1 (YamlSyntax rule : the first real
+# screen OVERWRITES Screen1.pa.yaml) and Tasks = DetailsScreen (example name of the
+# ecran1_reutilise_premier_ecran pattern). PITFALLS RESPECTED : no Navigate in App.OnStart
+# nor in the arrival screen's OnVisible ( here OnVisible only does Set) ;
+# Gallery with FillPortions: =1 without Height (Pattern A).
+# ============================================================================
+Screens:
+  Screen1:
+    Properties:
+      Fill: =RGBA(246, 246, 250, 1)
+      OnVisible: |-
+        =Set(varMenuExpanded, false);
+        Set(CurrentMenuID, 1)
+    Children:
+      - conScreen1Root:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            Width: =Parent.Width
+            Height: =Parent.Height
+            LayoutMinWidth: =0
+            LayoutMinHeight: =0
+            LayoutDirection: =LayoutDirection.Horizontal
+            DropShadow: =DropShadow.None
+          Children:
+            - conSidebar:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  Width: =If(varMenuExpanded, 200, 60)
+                  Height: =Parent.Height
+                  LayoutDirection: =LayoutDirection.Vertical
+                  DropShadow: =DropShadow.None
+                  Fill: =Color.White
+                  LayoutMinWidth: =0
+                  LayoutMinHeight: =0
+                Children:
+                  - navGallery:
+                      Control: Gallery
+                      Variant: Vertical
+                      Properties:
+                        Items: |-
+                          =Table(
+                              {
+                                  MenuName: "Home",
+                                  MenuID: 1,
+                                  PageNavigation: Screen1
+                              },
+                              {
+                                  MenuName: "Tasks",
+                                  MenuID: 2,
+                                  PageNavigation: DetailsScreen
+                              }
+                          )
+                        FillPortions: =1
+                        TemplateSize: =60
+                        TemplatePadding: =0
+                        ShowScrollbar: =false
+                        DelayItemLoading: =false
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        OnSelect: =Navigate(ThisItem.PageNavigation); Set(CurrentMenuID, ThisItem.MenuID)
+                      Children:
+                        - navRowShell:
+                            Control: GroupContainer
+                            Variant: AutoLayout
+                            Properties:
+                              Width: =Parent.TemplateWidth
+                              Height: =Parent.TemplateHeight
+                              LayoutDirection: =LayoutDirection.Horizontal
+                              LayoutAlignItems: =LayoutAlignItems.Center
+                              LayoutGap: =8
+                              PaddingLeft: =10
+                              LayoutMinWidth: =0
+                              LayoutMinHeight: =0
+                              DropShadow: =DropShadow.None
+                            Children:
+                              - navLblName:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Visible: =varMenuExpanded
+                                    Text: =ThisItem.MenuName
+                                    AlignInContainer: =AlignInContainer.Stretch
+                                    FillPortions: =1
+                                    LayoutMinHeight: =0
+                                    Color: =If(CurrentMenuID = ThisItem.MenuID, RGBA(42,43,71,1), RGBA(192,194,197,1))
+                                    Font: =Font.'Lato Light'
+                                    Size: =11
+            - conMain:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =1
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutAlignItems: =LayoutAlignItems.Stretch
+                  LayoutMinWidth: =0
+                  LayoutMinHeight: =0
+                  DropShadow: =DropShadow.None
+                Children:
+                  - conMainHeader:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        Height: =75
+                        FillPortions: =0
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutAlignItems: =LayoutAlignItems.Center
+                        LayoutGap: =8
+                        PaddingLeft: =10
+                        LayoutMinWidth: =0
+                        LayoutMinHeight: =0
+                        DropShadow: =DropShadow.None
+                      Children:
+                        - btnCollapseToggle:
+                            Control: ModernButton
+                            Properties:
+                              Text: ="Menu"
+                              Appearance: =ButtonAppearance.Subtle
+                              OnSelect: =Set(varMenuExpanded, !varMenuExpanded)
+                              FillPortions: =0
+                              LayoutMinWidth: =0
+                              LayoutMinHeight: =0
+                        - lblMainTitle:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              AlignInContainer: =AlignInContainer.Stretch
+                              FillPortions: =1
+                              LayoutMinHeight: =0
+                              Text: ="Home"
+                              Font: =Font.'Lato Black'
+                              Size: =20
+                  - conMainBody:
+                      Control: GroupContainer
+                      Variant: AutoLayout
+                      Properties:
+                        FillPortions: =1
+                        LayoutOverflowY: =LayoutOverflow.Scroll
+                        LayoutDirection: =LayoutDirection.Vertical
+                        LayoutAlignItems: =LayoutAlignItems.Start
+                        LayoutMinWidth: =0
+                        LayoutMinHeight: =0
+                        DropShadow: =DropShadow.None
+                      Children:
+                        - lblBodyHint:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              FillPortions: =0
+                              LayoutMinHeight: =0
+                              PaddingLeft: =16
+                              Text: ="Selectionnez une entree dans le menu."
+                              Font: =Font.Lato
+                              Size: =11

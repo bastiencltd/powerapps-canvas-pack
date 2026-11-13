@@ -1,0 +1,51 @@
+# ============================================================================
+# TEMPLATE base-screen — basic modern screen : GroupContainer AutoLayout root
+# full viewport + ModernText + ModernButton.
+# MACHINE-PROVEN : the file is the exact Screen1.pa.yaml of a complete app
+# (App.pa.yaml + Screen1.pa.yaml + _EditorState.pa.yaml, 3 files) compiled with
+# compile_canvas -> "Validation PASSED, Files validated: 3".
+# Proof scratch folder : _scratch\agent-6c\base-screen\
+# WHERE TO INSERT : in CREATE, overwrite the starting workspace's Screen1.pa.yaml (never a
+# Home.pa.yaml next to an empty Screen1). Rename the key "Screen1:" = file name.
+# Keep App.StartScreen: =Screen1 and declare the screen name in
+# _EditorState.pa.yaml (EditorState: ScreensOrder:). The OnVisible data is
+# optional here : the screen compiles without it.
+# Formulas : literal values only (p0-base) ; OnSelect: =false comes from the
+# bouton_custom_overlay_transparent pattern (05-patterns-templates.json) — replace
+# with the real action.
+# ============================================================================
+Screens:
+  Screen1:
+    Properties:
+      Fill: =RGBA(246, 246, 250, 1)
+    Children:
+      - conHomeRoot:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            Width: =Parent.Width
+            Height: =Parent.Height
+            LayoutMinWidth: =0
+            LayoutMinHeight: =0
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutOverflowY: =LayoutOverflow.Scroll
+            DropShadow: =DropShadow.None
+          Children:
+            - txtHomeTitle:
+                Control: ModernText
+                Properties:
+                  Text: ="Titre de la page"
+                  AutoHeight: =true
+                  AlignInContainer: =AlignInContainer.Stretch
+                  FillPortions: =0
+                  LayoutMinHeight: =0
+            - btnHomeAction:
+                Control: ModernButton
+                Properties:
+                  Text: ="Continuer"
+                  Appearance: =ButtonAppearance.Primary
+                  OnSelect: =false
+                  FillPortions: =0
+                  LayoutMinWidth: =0
+                  LayoutMinHeight: =0

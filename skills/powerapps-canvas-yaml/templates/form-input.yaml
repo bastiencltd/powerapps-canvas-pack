@@ -1,0 +1,113 @@
+# ============================================================================
+# TEMPLATE form-input — input form : GroupContainer AutoLayout (root +
+# card) + Label + ModernTextInput + ModernButton, action = Patch() on a local
+# collection (Form + SubmitForm has NO literal formula in
+# 05-patterns-templates.json : the formulaire_form_lie_source pattern only traces
+# "Form | DataSource, Item, OnSuccess" ; chosen pattern = cycle_mutation_avec_recu).
+# Machine note : if a Form is used, the Layout keyword is MANDATORY
+# (describe_control : Layout: Vertical or Horizontal) and its only allowed children
+# are DataCard/TypedDataCard.
+# MACHINE-PROVEN : Screen1.pa.yaml of a complete app (3 files, App.pa.yaml
+# defining colRecords + varSelectedCategory in App.OnStart) compiled by
+# compile_canvas -> "Validation PASSED, Files validated: 3" (after 1 iteration :
+# txtName.Value -> txtName.Text, raw diagnostic "Name isn't valid. 'Value' isn't
+# recognized." — the output of ModernTextInput is Text, see describe_control ;
+# Trim(txtStart.Text) is also literal in 05-patterns-templates.json).
+# Proof scratch folder : _scratch\agent-6c\form-input\
+# (copy its App.pa.yaml : it initializes the colRecords/varSelectedCategory required by the
+# OnSelect formula ; never ClearCollect fixed data in a screen OnVisible).
+# WHERE TO INSERT : full screen in CREATE (overwrite Screen1.pa.yaml).
+# OnSelect formula = literal copy of the cycle_mutation_avec_recu pattern
+# (05-patterns-templates.json) with the single Text/Value adaptation reported above.
+# card/label/input structure = champ_groupe_label_input_hauteur_calculee pattern
+# (Label AutoHeight: =true MANDATORY).
+# ============================================================================
+Screens:
+  Screen1:
+    Properties:
+      Fill: =RGBA(246, 246, 250, 1)
+    Children:
+      - conFormRoot:
+          Control: GroupContainer
+          Variant: AutoLayout
+          Properties:
+            Width: =Parent.Width
+            Height: =Parent.Height
+            LayoutMinWidth: =0
+            LayoutMinHeight: =0
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutOverflowY: =LayoutOverflow.Scroll
+            DropShadow: =DropShadow.None
+          Children:
+            - conFormCard:
+                Control: GroupContainer
+                Variant: AutoLayout
+                Properties:
+                  FillPortions: =0
+                  LayoutDirection: =LayoutDirection.Vertical
+                  LayoutGap: =6
+                  LayoutMinWidth: =0
+                  LayoutMinHeight: =0
+                  PaddingTop: =20
+                  PaddingBottom: =20
+                  PaddingLeft: =20
+                  PaddingRight: =20
+                  RadiusBottomLeft: =10
+                  RadiusBottomRight: =10
+                  RadiusTopLeft: =10
+                  RadiusTopRight: =10
+                  DropShadow: =DropShadow.None
+                Children:
+                  - lblFormTitle:
+                      Control: ModernText
+                      Properties:
+                        Text: ="Nouvelle entree"
+                        AutoHeight: =true
+                        AlignInContainer: =AlignInContainer.Stretch
+                        FillPortions: =0
+                        LayoutMinHeight: =0
+                  - lblFormName:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        AlignInContainer: =AlignInContainer.Stretch
+                        FillPortions: =0
+                        Text: ="Nom"
+                  - txtName:
+                      Control: ModernTextInput
+                      Properties:
+                        AlignInContainer: =AlignInContainer.Stretch
+                        FillPortions: =0
+                        Height: =40
+                        LayoutMinHeight: =0
+                        LayoutMinWidth: =0
+                        Placeholder: ="Saisir un nom"
+                  - btnFormSave:
+                      Control: ModernButton
+                      Properties:
+                        Text: ="Enregistrer"
+                        Appearance: =ButtonAppearance.Primary
+                        FillPortions: =0
+                        LayoutMinWidth: =0
+                        LayoutMinHeight: =0
+                        OnSelect: |-
+                          =If(
+                            !IsBlank(Trim(txtName.Text)),
+                            Set(
+                              varLastRecord,
+                              Patch(
+                                colRecords,
+                                Defaults(colRecords),
+                                {
+                                  ID: GUID(),
+                                  Name: Trim(txtName.Text),
+                                  Category: varSelectedCategory,
+                                  Status: "Pending"
+                                }
+                              )
+                            );
+                            Set(varLastAction, "Created");
+                            Set(varReceiptVisible, true);
+                            Reset(txtName)
+                          )
